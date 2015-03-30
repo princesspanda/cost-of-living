@@ -25,6 +25,7 @@ sudo -u vagrant -H sh -c "git config --global alias.br branch"
 sudo -u vagrant -H sh -c "git config --global alias.ci commit"
 sudo -u vagrant -H sh -c "git config --global alias.st status"
 sudo -u vagrant -H sh -c "git config --global alias.last 'log -1 HEAD'"
+sudo -u vagrant -H sh -c "git config --global color.ui auto"
 
 echo "Copying .bash_aliases ..."
 sudo cp /vagrant/.bash_aliases /home/vagrant/

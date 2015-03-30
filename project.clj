@@ -5,7 +5,7 @@
                  [compojure "1.1.6"]
                  [hiccup "1.0.5"]
                  [ring-server "0.3.1"]]
-  :plugins [[lein-ring "0.8.12"]]
+  :plugins [[lein-ring "0.8.12"] [lein-difftest "2.0.0"]]
   :ring {:handler cost-of-living.handler/app
          :init cost-of-living.handler/init
          :destroy cost-of-living.handler/destroy}
