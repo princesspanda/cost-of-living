@@ -17,6 +17,9 @@
 			 {:body {
 							 :schedule schedule
 							 :mortgage-interest-deductions (reduce #(conj %1 { %2 (schedule/yearly-interest-cents schedule %2)} ) {} (range 1 16))
+							 :property-tax-deductions (reduce #(conj %1 { %2 5000 }) {}  (range 1 16)) ;; naive simplifying assumptions for now -- revisit later
+							 ;:millage-rate 24.0
+							 ;:tax-assessed-value 230000
 							 }}
 			 )
 			 ))
