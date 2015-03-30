@@ -1,7 +1,8 @@
 (ns cost-of-living.routes.home
   (:require [compojure.core :refer :all]
             [cost-of-living.views.layout :as layout]
-						[cost-of-living.models.amort :as amort])
+						[cost-of-living.models.amort :as amort]
+						[cost-of-living.helpers.param_utils :as utils])
 )
 
 (defn home []
@@ -9,4 +10,6 @@
 
 (defroutes home-routes
   (GET "/" [] (home))
-	(GET "/schedule" [] {:body (amort/amort-schedule 1000 1 3.125)}))
+	(GET "/schedule" [principal
+										interest-rate]
+			 {:body (amort/amort-schedule (utils/parse-int principal)  1  (utils/parse-double interest-rate))}))

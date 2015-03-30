@@ -14,6 +14,6 @@
       (is (= (:status response) 404))))
 
 	(testing "schedule route"
-	 (let [response (app (request :get "/schedule"))]
+	 (let [response (app (request :get "/schedule", { :principal 1000 :interest-rate 3.125}))]
 	   (is (= (get-in response [:headers "Content-Type"])  "application/json; charset=utf-8"))
 	 )))
