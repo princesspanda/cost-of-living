@@ -7,7 +7,7 @@
 (is (= (reduce + (range 1 13)) (yearly-interest-cents fake-schedule 1)))
 (is (= (reduce + (range 13 25)) (yearly-interest-cents fake-schedule 2)))
 
-(is (= "Year cannot be < 1" (yearly-interest-cents fake-schedule 1)))
+(is (= "Year cannot be < 1" (yearly-interest-cents fake-schedule 0)))
 (is (= "Year requested exceeds length of term" (yearly-interest-cents fake-schedule 42)))
 )
 )
