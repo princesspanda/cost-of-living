@@ -33,6 +33,6 @@
 					 :balance_cents        (Math/round (- balance-cents principal-cents))}))
 )
 []
-(range 1 (inc term-months)))))
+(range 1 (inc term-months)))) )
 
 

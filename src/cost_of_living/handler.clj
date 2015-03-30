@@ -5,7 +5,10 @@
             [hiccup.middleware :refer [wrap-base-url]]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            [cost-of-living.routes.home :refer [home-routes]]))
+            [cost-of-living.routes.home :refer [home-routes]])
+  (:use [ring.middleware.json :only [wrap-json-response]]
+			  [ring.util.response :only [response]])
+)
 
 (defn init []
   (println "cost-of-living is starting"))
@@ -20,4 +23,6 @@
 (def app
   (-> (routes home-routes app-routes)
       (handler/site)
-      (wrap-base-url)))
+      (wrap-base-url)
+			wrap-json-response
+			))

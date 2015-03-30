@@ -11,4 +11,9 @@
 
   (testing "not-found route"
     (let [response (app (request :get "/invalid"))]
-      (is (= (:status response) 404)))))
+      (is (= (:status response) 404))))
+
+	(testing "schedule route"
+	 (let [response (app (request :get "/schedule"))]
+	   (is (= (get-in response [:headers "Content-Type"])  "application/json; charset=utf-8"))
+	 )))
