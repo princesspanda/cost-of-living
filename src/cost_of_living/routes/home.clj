@@ -27,45 +27,44 @@
 						 yearly-principal-payments (reduce #(conj %1 (utils/in-dollars (schedule/yearly-principal-cents schedule %2))) [] (range 1 (inc term-years)))
 						 yearly-rent-payments (repeat term-years (* 12 (utils/in-dollars (:payment_cents (first schedule)))))
 						 property-tax-deductions (vec (repeat term-years 5000))
-						 yearly-deductions-with-ownership (deductions/yearly-deductions p1-401k p2-401k mortgage-interest-deductions property-tax-deductions)
-						 yearly-deductions-no-ownership (deductions/yearly-deductions p1-401k p2-401k standard-deduction)
-						 taxable-income-with-ownership (map #(- joint-pretax-income %1) yearly-deductions-with-ownership)
-						 taxable-income-no-ownership (map #(- joint-pretax-income %1) yearly-deductions-no-ownership)
 						 basic-outputs {
 														:schedule schedule
 														:mortgage-interest-deductions mortgage-interest-deductions
 														:property-tax-deductions  property-tax-deductions ;; naive simplifying assumptions for now -- revisit later
 														:joint-pretax-income joint-pretax-income
-														:yearly-deductions {
-																								:with-ownership yearly-deductions-with-ownership
-																								:no-ownership yearly-deductions-no-ownership
-																								}
-														:taxable-income {
-																						 :with-ownership taxable-income-with-ownership
-																						 :no-ownership taxable-income-no-ownership
-																						 }
-														:average-tax-rate {
-																							 :with-ownership (map #(taxes/average-tax-rate %1 :jointly) taxable-income-with-ownership)
-																							 :no-ownership (map #(taxes/average-tax-rate %1 :jointly) taxable-income-no-ownership)
-																							 }
-														:taxes-in-dollars {
-																							 :with-ownership (map #(taxes/taxes-in-dollars %1 :jointly) taxable-income-with-ownership)
-																							 :no-ownership (map #(taxes/taxes-in-dollars %1 :jointly) taxable-income-no-ownership)
-																							 }
 													 }
+						 yearly-deductions {
+																:with-ownership (deductions/yearly-deductions p1-401k p2-401k mortgage-interest-deductions property-tax-deductions)
+																:no-ownership (deductions/yearly-deductions p1-401k p2-401k standard-deduction)
+																}
+						 taxable-income {
+														 :with-ownership (map #(- joint-pretax-income %1) (:with-ownership yearly-deductions))
+														 :no-ownership (map #(- joint-pretax-income %1) (:no-ownership yearly-deductions))
+														 }
+						 average-tax-rate {
+															 :with-ownership (map #(taxes/average-tax-rate %1 :jointly) (:with-ownership taxable-income))
+															 :no-ownership (map #(taxes/average-tax-rate %1 :jointly) (:no-ownership taxable-income))
+															 }
+
+						 taxes-in-dollars {
+															 :with-ownership (map #(taxes/taxes-in-dollars %1 :jointly) (:with-ownership taxable-income))
+															 :no-ownership (map #(taxes/taxes-in-dollars %1 :jointly) (:no-ownership taxable-income))
+															 }
 						 post-tax-income {
-															:post-tax-income {
-																								:with-ownership (mapv - (get-in basic-outputs [:taxable-income :with-ownership]) (get-in basic-outputs [:taxes-in-dollars :with-ownership]))
-																								:no-ownership (mapv - (get-in basic-outputs [:taxable-income :no-ownership]) (get-in basic-outputs [:taxes-in-dollars :no-ownership]))
-																								}
+															:with-ownership (mapv - (:with-ownership taxable-income) (:with-ownership taxes-in-dollars))
+															:no-ownership (mapv - (:no-ownership taxable-income) (:no-ownership taxes-in-dollars))
 															}
 						 post-tax-post-housing-income {
-																					 :post-tax-post-housing-income {
-																																					:with-ownership (mapv - (get-in post-tax-income [:post-tax-income :with-ownership]) yearly-principal-payments)
-																																					:no-ownership (mapv - (get-in post-tax-income [:post-tax-income :no-ownership]) yearly-rent-payments)
-																																					}
+																					 :with-ownership (mapv - (:with-ownership post-tax-income) yearly-principal-payments)
+																					 :no-ownership (mapv - (:no-ownership post-tax-income) yearly-rent-payments)
 																					 }
 						 ]
-			 {:body (conj basic-outputs post-tax-income post-tax-post-housing-income)}
+			 {:body (conj basic-outputs
+										{:yearly-deductions yearly-deductions}
+										{:taxable-income taxable-income}
+										{:average-tax-rate average-tax-rate}
+										{:taxes-in-dollars taxes-in-dollars }
+										{:post-tax-income post-tax-income}
+										{:post-tax-post-housing-income post-tax-post-housing-income})}
 			 )
 			 ))
