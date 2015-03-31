@@ -11,7 +11,7 @@
 "Parses a string into a double"
 (let [nums (re-seq #"[\d]+\.[\d]+" str)]
 (if (empty? nums)
-0
+0.0
 (read-string (first nums)))
 )
 )
@@ -26,3 +26,7 @@
 "Takes cents, divides by 100, and rounds"
 (Math/round (/ x-cents 100.0))
 )
+
+(defn round2
+[d]
+(/ (in-cents d) 100.0))
