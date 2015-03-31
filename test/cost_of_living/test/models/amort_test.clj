@@ -1,6 +1,7 @@
 (ns cost-of-living.test.models.amort_test
-(:use clojure.test
-			cost-of-living.models.amort))
+(:use clojure.test)
+(:require [cost-of-living.models.amort :as amort]
+			[cost-of-living.helpers.param_utils :as utils]))
 
 
 (def expected-amort-schedule
@@ -21,9 +22,9 @@
 )
 
 (deftest test-amort-schedule
-(is (= (map :total_interest_cents expected-amort-schedule) (map :total_interest_cents (amort-schedule 1000 1 3.125))))
-(is (<= 1 (- (in-cents 1000.0) (reduce + (map :principal_cents (amort-schedule 1000 1 3.125)))))))
+(is (= (map :total_interest_cents expected-amort-schedule) (map :total_interest_cents (amort/amort-schedule 1000 1 3.125))))
+(is (<= 1 (- (utils/in-cents 1000.0) (reduce + (map :principal_cents (amort/amort-schedule 1000 1 3.125)))))))
 
 (deftest test-calculate-payment
-(is (= 8475 (calculate-payment 1000 12 3.125)))
+(is (= 8475 (amort/calculate-payment 1000 12 3.125)))
 )

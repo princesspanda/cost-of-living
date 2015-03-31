@@ -15,3 +15,14 @@
 (read-string (first nums)))
 )
 )
+
+(defn in-cents [d]
+"Round a double to the # of cents"
+(let [factor 100.0]
+(Math/round (* d factor))))
+
+
+(defn in-dollars [x-cents]
+"Takes cents, divides by 100, and rounds"
+(Math/round (/ x-cents 100.0))
+)

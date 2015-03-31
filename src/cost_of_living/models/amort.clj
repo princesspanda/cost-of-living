@@ -1,16 +1,11 @@
-(ns cost-of-living.models.amort)
+(ns cost-of-living.models.amort
+(:require [cost-of-living.helpers.param_utils :as utils]))
 
-
-(defn in-cents
-"Round a double to the # of cents"
-[d]
-(let [factor 100]
-(Math/round (* d factor))))
 
 (defn calculate-payment [principal term-months interest-rate]
 (let [monthly-interest (/ interest-rate 1200)
 			exp (Math/pow (+ 1 monthly-interest) term-months)]
-(in-cents (/ (* monthly-interest principal exp) (- exp 1)))
+(utils/in-cents (/ (* monthly-interest principal exp) (- exp 1)))
 )
 )
 
@@ -18,7 +13,7 @@
 (let [term-months (* 12 term-years)
 			monthly-payment-cents (calculate-payment principal term-months interest-rate)
 			monthly-interest-pct (/ interest-rate 1200)
-			initial-principal-cents (in-cents (double principal))]
+			initial-principal-cents (utils/in-cents (double principal))]
 (reduce
 (fn [acc n]
 (let [balance-cents (if (nil? (last acc)) initial-principal-cents (:balance_cents (last acc)))
