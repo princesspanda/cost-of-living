@@ -14,14 +14,19 @@
 (defroutes home-routes
   (GET "/" [] (home))
 	(GET "/schedule" [principal
-										interest-rate]
-			 (let [term-years 15
+										interest-rate
+										term-years
+										p1-income
+										p2-income
+										p1-401k
+										p2-401k]
+			 (let [term-years (utils/parse-int term-years)
 						 schedule (amort/amort-schedule (utils/parse-int principal)  term-years  (utils/parse-double interest-rate))
-						 p1-income 140000
-						 p2-income 130000
+						 p1-income (utils/parse-int p1-income)
+						 p2-income (utils/parse-int p2-income)
 						 joint-pretax-income (+ p1-income p2-income)
-						 p1-401k 10000
-						 p2-401k 0
+						 p1-401k (utils/parse-int p1-401k)
+						 p2-401k (utils/parse-int p2-401k)
 						 standard-deduction (vec (repeat term-years 13600))
 						 mortgage-interest-deductions (reduce #(conj %1 (utils/in-dollars (schedule/yearly-interest-cents schedule %2))) [] (range 1 (inc term-years)))
 						 yearly-principal-payments (reduce #(conj %1 (utils/in-dollars (schedule/yearly-principal-cents schedule %2))) [] (range 1 (inc term-years)))
